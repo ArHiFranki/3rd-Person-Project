@@ -8,12 +8,18 @@ public class RelativeMovement : MonoBehaviour
     [SerializeField] private Transform _target;
     [SerializeField] private float _rotationSpeed = 15.0f;
     [SerializeField] private float _moveSpeed = 6.0f;
+    [SerializeField] private float _jumpSpeed = 15.0f;
+    [SerializeField] private float _gravity = -9.8f;
+    [SerializeField] private float _terminalVelocity = -10.0f;
+    [SerializeField] private float _minFall = -1.5f;
 
     private CharacterController _characterController;
+    private float _verticalSpeed;
 
     private void Start()
     {
         _characterController = GetComponent<CharacterController>();
+        _verticalSpeed = _minFall;
     }
 
     private void Update()
@@ -37,6 +43,27 @@ public class RelativeMovement : MonoBehaviour
             Quaternion direction = Quaternion.LookRotation(movement);
             transform.rotation = Quaternion.Lerp(transform.rotation, direction, _rotationSpeed * Time.deltaTime);
         }
+
+        if (_characterController.isGrounded)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                _verticalSpeed = _jumpSpeed;
+            }
+            else
+            {
+                _verticalSpeed = _minFall;
+            }
+        }
+        else
+        {
+            _verticalSpeed += _gravity * 5 * Time.deltaTime;
+            if (_verticalSpeed < _terminalVelocity)
+            {
+                _verticalSpeed = _terminalVelocity;
+            }
+        }
+        movement.y = _verticalSpeed;
 
         movement *= Time.deltaTime;
         _characterController.Move(movement);
