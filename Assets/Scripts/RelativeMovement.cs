@@ -5,6 +5,7 @@ using UnityEngine;
 public class RelativeMovement : MonoBehaviour
 {
     [SerializeField] private Transform _target;
+    [SerializeField] private float _rotationSpeed = 15.0f;
 
     private void Update()
     {
@@ -23,7 +24,8 @@ public class RelativeMovement : MonoBehaviour
             movement = _target.TransformDirection(movement);
             _target.rotation = tmp;
 
-            transform.rotation = Quaternion.LookRotation(movement);
+            Quaternion direction = Quaternion.LookRotation(movement);
+            transform.rotation = Quaternion.Lerp(transform.rotation, direction, _rotationSpeed * Time.deltaTime);
         }
     }
 }
