@@ -14,6 +14,7 @@ public class RelativeMovement : MonoBehaviour
     [SerializeField] private float _minFall = -1.5f;
 
     private CharacterController _characterController;
+    private ControllerColliderHit _contact;
     private float _verticalSpeed;
 
     private void Start()
@@ -25,6 +26,8 @@ public class RelativeMovement : MonoBehaviour
     private void Update()
     {
         Vector3 movement = Vector3.zero;
+        bool hitGround = false;
+        RaycastHit hit;
 
         float horizpntalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
@@ -44,7 +47,13 @@ public class RelativeMovement : MonoBehaviour
             transform.rotation = Quaternion.Lerp(transform.rotation, direction, _rotationSpeed * Time.deltaTime);
         }
 
-        if (_characterController.isGrounded)
+        if (_verticalSpeed < 0 && Physics.Raycast(transform.position, Vector3.down, out hit))
+        {
+            float check = (_characterController.height + _characterController.radius) / 1.9f;
+            hitGround = hit.distance <= check;
+        }
+
+        if (hitGround)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -62,10 +71,27 @@ public class RelativeMovement : MonoBehaviour
             {
                 _verticalSpeed = _terminalVelocity;
             }
+
+            if (_characterController.isGrounded)
+            {
+                if (Vector3.Dot(movement, _contact.normal) < 0)
+                {
+                    movement = _contact.normal * _moveSpeed;
+                }
+                else
+                {
+                    movement += _contact.normal * _moveSpeed;
+                }
+            }
         }
         movement.y = _verticalSpeed;
 
         movement *= Time.deltaTime;
         _characterController.Move(movement);
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        _contact = hit;
     }
 }
