@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(CharacterController), typeof(Animator))]
 public class RelativeMovement : MonoBehaviour
 {
     [SerializeField] private Transform _target;
@@ -15,11 +15,13 @@ public class RelativeMovement : MonoBehaviour
 
     private CharacterController _characterController;
     private ControllerColliderHit _contact;
+    private Animator _animator;
     private float _verticalSpeed;
 
     private void Start()
     {
         _characterController = GetComponent<CharacterController>();
+        _animator = GetComponent<Animator>();
         _verticalSpeed = _minFall;
     }
 
@@ -47,6 +49,8 @@ public class RelativeMovement : MonoBehaviour
             transform.rotation = Quaternion.Lerp(transform.rotation, direction, _rotationSpeed * Time.deltaTime);
         }
 
+        _animator.SetFloat("Speed", movement.sqrMagnitude);
+
         if (_verticalSpeed < 0 && Physics.Raycast(transform.position, Vector3.down, out hit))
         {
             float check = (_characterController.height + _characterController.radius) / 1.9f;
@@ -62,6 +66,7 @@ public class RelativeMovement : MonoBehaviour
             else
             {
                 _verticalSpeed = _minFall;
+                _animator.SetBool("Jumping", false);
             }
         }
         else
@@ -70,6 +75,11 @@ public class RelativeMovement : MonoBehaviour
             if (_verticalSpeed < _terminalVelocity)
             {
                 _verticalSpeed = _terminalVelocity;
+            }
+
+            if (_contact != null)
+            {
+                _animator.SetBool("Jumping", true);
             }
 
             if (_characterController.isGrounded)
