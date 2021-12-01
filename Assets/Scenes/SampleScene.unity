@@ -3922,6 +3922,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82b49e03993fc7f449eb52af11701b58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  requireKey: 1
   _targets:
   - {fileID: 1707115382}
 --- !u!4 &1694363548 stripped

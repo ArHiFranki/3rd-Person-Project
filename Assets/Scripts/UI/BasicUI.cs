@@ -22,8 +22,28 @@ public class BasicUI : MonoBehaviour
         foreach (string item in itemList)
         {
             int count = Managers.Inventory.GetItemCount(item);
-            Texture2D image = Resources.Load<Texture2D>("Icons/" + item);
-            GUI.Box(new Rect(positionX, positionY, width, height), new GUIContent("(" + count + ")", image));
+            GUI.Box(new Rect(positionX, positionY, width, height), item + "(" + count + ")");
+            positionX += width + buffer;
+        }
+
+        string equipped = Managers.Inventory.equippedItem;
+        if (equipped != null)
+        {
+            positionX = Screen.width - (width + buffer);
+            Texture2D image = Resources.Load("Icons/" + equipped) as Texture2D;
+            GUI.Box(new Rect(positionX, positionY, width, height), new GUIContent("Equipped", image));
+        }
+
+        positionX = 10;
+        positionY += height + buffer;
+
+        foreach (string item in itemList)
+        {
+            if (GUI.Button(new Rect(positionX, positionY, width, height), "Equip" + item))
+            {
+                Managers.Inventory.EquipItem(item);
+            }
+
             positionX += width + buffer;
         }
     }
