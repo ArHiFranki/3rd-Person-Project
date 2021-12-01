@@ -6,13 +6,13 @@ public class InventoryManager : MonoBehaviour, IGameManager
 {
     public ManagerStatus status { get; private set; }
 
-    private List<string> _items;
+    private Dictionary<string, int> _items;
 
     public void Startup()
     {
         Debug.Log("Inventory manager starting...");
 
-        _items = new List<string>();
+        _items = new Dictionary<string, int>();
 
         status = ManagerStatus.Started;
     }
@@ -21,9 +21,9 @@ public class InventoryManager : MonoBehaviour, IGameManager
     {
         string itemDisplay = "Items: ";
 
-        foreach (string item in _items)
+        foreach (KeyValuePair<string, int> item in _items)
         {
-            itemDisplay += item + " ";
+            itemDisplay += item.Key + "(" +  item.Value + ") ";
         }
 
         Debug.Log(itemDisplay);
@@ -31,7 +31,14 @@ public class InventoryManager : MonoBehaviour, IGameManager
 
     public void AddItems(string name)
     {
-        _items.Add(name);
+        if (_items.ContainsKey(name))
+        {
+            _items[name] += 1;
+        }
+        else
+        {
+            _items[name] = 1;
+        }
 
         DisplayItems();
     }
