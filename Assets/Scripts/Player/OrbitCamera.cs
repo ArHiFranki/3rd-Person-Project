@@ -18,6 +18,8 @@ public class OrbitCamera : MonoBehaviour
 
     private void LateUpdate()
     {
+        // ”правление камерой с помощью мыши
+        /*
         float horizontalInput = Input.GetAxis("Horizontal");
         if (horizontalInput != 0)
         {
@@ -28,6 +30,12 @@ public class OrbitCamera : MonoBehaviour
             _rotationY += Input.GetAxis("Mouse X") * _rotationSpeed * 10;
         }
 
+        Quaternion rotation = Quaternion.Euler(0, _rotationY, 0);
+        transform.position = _target.position - (rotation * _offset);
+        transform.LookAt(_target);
+        */
+
+        _rotationY -= Input.GetAxis("Horizontal") * _rotationSpeed;
         Quaternion rotation = Quaternion.Euler(0, _rotationY, 0);
         transform.position = _target.position - (rotation * _offset);
         transform.LookAt(_target);
