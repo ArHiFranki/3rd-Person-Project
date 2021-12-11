@@ -7,7 +7,6 @@ public class PointClickMovement : MonoBehaviour
     [SerializeField] private Transform _target;
     [SerializeField] private float _rotationSpeed = 15.0f;
     [SerializeField] private float _moveSpeed = 6.0f;
-    [SerializeField] private float _jumpSpeed = 15.0f;
     [SerializeField] private float _gravity = -9.8f;
     [SerializeField] private float _terminalVelocity = -10.0f;
     [SerializeField] private float _minFall = -1.5f;
@@ -42,8 +41,13 @@ public class PointClickMovement : MonoBehaviour
 
             if (Physics.Raycast(ray, out mouseHit))
             {
-                _targetPosition = mouseHit.point;
-                _currentSpeed = _moveSpeed;
+                GameObject hitObject = mouseHit.transform.gameObject;
+
+                if (hitObject.layer == LayerMask.NameToLayer("Ground"))
+                {
+                    _targetPosition = mouseHit.point;
+                    _currentSpeed = _moveSpeed;
+                }
             }
         }
 
