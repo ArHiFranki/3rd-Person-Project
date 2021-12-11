@@ -25,6 +25,7 @@ public class WarderingAI : MonoBehaviour
     private void Start()
     {
         _isAlive = true;
+        Messenger<float>.Broadcast(GameEvent.SPEED_CHANGED, 1f);
     }
 
     private void Update()
