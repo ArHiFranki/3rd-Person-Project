@@ -6,5 +6,5 @@ public interface IGameManager
 {
     ManagerStatus status { get; }
 
-    void Startup();
+    void Startup(NetwokrService service);
 }
