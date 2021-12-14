@@ -6,22 +6,26 @@ using TMPro;
 public class UIController : MonoBehaviour
 {
     [SerializeField] private TMP_Text _healthLabel;
+    [SerializeField] private TMP_Text _levelEnding;
     [SerializeField] private InventoryPopup _popup;
 
     private void Awake()
     {
         Messenger.AddListener(GameEvent.HEALTH_UPDATE, OnHealthUpdated);
+        Messenger.AddListener(GameEvent.LEVEL_COMPLETE, OnLevelComplete);
     }
 
     private void OnDestroy()
     {
         Messenger.RemoveListener(GameEvent.HEALTH_UPDATE, OnHealthUpdated);
+        Messenger.RemoveListener(GameEvent.LEVEL_COMPLETE, OnLevelComplete);
     }
 
     private void Start()
     {
         OnHealthUpdated();
 
+        _levelEnding.gameObject.SetActive(false);
         _popup.gameObject.SetActive(false);
     }
 
@@ -39,5 +43,20 @@ public class UIController : MonoBehaviour
     {
         string message = "Health: " + Managers.Player.health + "/" + Managers.Player.maxHealth;
         _healthLabel.text = message;
+    }
+
+    private void OnLevelComplete()
+    {
+        StartCoroutine(CompleteLevel());
+    }
+
+    private IEnumerator CompleteLevel()
+    {
+        _levelEnding.gameObject.SetActive(true);
+        _levelEnding.text = "Level Complete!";
+
+        yield return new WaitForSeconds(2);
+
+        Managers.Mission.GoToNext();
     }
 }
