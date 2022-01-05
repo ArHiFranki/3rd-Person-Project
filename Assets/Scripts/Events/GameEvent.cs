@@ -9,4 +9,5 @@ public class GameEvent : MonoBehaviour
     public const string WEATHER_UPDATE = "WEATHER_UPDATE";
     public const string HEALTH_UPDATE = "HEALTH_UPDATE";
     public const string LEVEL_COMPLETE = "LEVEL_COMPLETE";
+    public const string LEVEL_FAILED = "LEVEL_FAILED";
 }

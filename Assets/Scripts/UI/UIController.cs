@@ -13,12 +13,14 @@ public class UIController : MonoBehaviour
     {
         Messenger.AddListener(GameEvent.HEALTH_UPDATE, OnHealthUpdated);
         Messenger.AddListener(GameEvent.LEVEL_COMPLETE, OnLevelComplete);
+        Messenger.AddListener(GameEvent.LEVEL_FAILED, OnLevelFailed);
     }
 
     private void OnDestroy()
     {
         Messenger.RemoveListener(GameEvent.HEALTH_UPDATE, OnHealthUpdated);
         Messenger.RemoveListener(GameEvent.LEVEL_COMPLETE, OnLevelComplete);
+        Messenger.RemoveListener(GameEvent.LEVEL_FAILED, OnLevelFailed);
     }
 
     private void Start()
@@ -58,5 +60,21 @@ public class UIController : MonoBehaviour
         yield return new WaitForSeconds(2);
 
         Managers.Mission.GoToNext();
+    }
+
+    private void OnLevelFailed()
+    {
+        StartCoroutine(FailLevel());
+    }
+
+    private IEnumerator FailLevel()
+    {
+        _levelEnding.gameObject.SetActive(true);
+        _levelEnding.text = "Level Failed";
+
+        yield return new WaitForSeconds(2);
+
+        Managers.Player.Respawn();
+        Managers.Mission.RestartCurrent();
     }
 }
